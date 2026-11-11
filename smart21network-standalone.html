@@ -728,7 +728,6 @@ input[type=checkbox],input[type=radio],input[type=range]{accent-color:var(--bran
 .hm-btn small{display:none}
 .hm-btn.pri{background:var(--gold);border-color:var(--gold);color:var(--gold-ink);box-shadow:0 8px 22px rgba(255,209,102,.25)}
 .hm-btn.pri:hover{filter:brightness(1.07);border-color:var(--gold);background:var(--gold)}
-#hmContinue:not([hidden])~#hmNew{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.38);color:#fff;box-shadow:none}
 .hero-stats{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem}
 .hchip{display:inline-flex;gap:.35rem;align-items:baseline;padding:.32rem .85rem;border-radius:999px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.26);font-size:.8rem;color:#fff}.hchip b{font-weight:700}
 .hero-ring{position:relative;z-index:1;flex-shrink:0;width:150px;height:150px;margin-right:2.2rem;border-radius:50%;border:6px solid var(--gold);display:grid;place-items:center;background:rgba(0,0,0,.18);box-shadow:0 0 0 22px rgba(255,209,102,.16),0 14px 44px rgba(0,0,0,.4)}
@@ -1135,7 +1134,6 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
     <h1>Design, configure and simulate networks.</h1>
     <p>Build a topology with routers, switches, MikroTik devices, Wi-Fi and PCs. Configure them with real-style CLIs, then watch every packet travel hop by hop.</p>
     <div class="home-actions hm-actions">
-     <button class="hm-btn pri" id="hmContinue" hidden><span><b>Continue</b><small id="hmContSub"></small></span></button>
      <button class="hm-btn pri" id="hmNew"><span><b>New project</b></span></button>
      <button class="hm-btn" id="hmOpen"><span><b>Open a lab file</b></span></button>
      <button class="hm-btn" id="hmLabs"><span><b>Example labs</b></span></button>
@@ -2717,13 +2715,12 @@ hist=[];hi=-1;snap();renderBottom();loadHash();addEventListener('resize',render)
 (function(){const H=$('#home');let pref=true;try{pref=localStorage.getItem('s21home')!=='0'}catch(e){}
  const TUT=[1,2,3,4,5,6].map(n=>LABS.findIndex(l=>l.t.startsWith('Tutorial '+n+':')));
  function fill(){let saved=0;try{const o=JSON.parse(localStorage.getItem('s21net.v1')||'null');if(o&&o.w)saved=JSON.parse(o.w).devs.length}catch(e){}
-  const c=$('#hmContinue');c.hidden=!(saved||W.devs.length);$('#hmContSub').textContent=(W.devs.length||saved)+' devices in your last lab';
   $('#hmTut').innerHTML=TUT.filter(i=>i>=0).map(i=>`<button class="hm-card" data-hl="${i}"><span class="n">🎓 ${LABS[i].t.match(/\d+/)[0]}</span><b>${esc(LABS[i].t.replace(/^Tutorial \d+: /,''))}</b><small>${esc(LABS[i].d)}</small></button>`).join('');
   $$('[data-hl]').forEach(b=>b.onclick=()=>{if(!W.devs.length||confirm('Replace the current topology with this lab?')){hide();loadLab(+b.dataset.hl);setTimeout(()=>{if(W.act){actUi();$('#mAct').hidden=false}},350)}})}
- function show(){fill();$('#toast').hidden=true;$('#hmShow').checked=pref;H.hidden=false;document.body.style.overflow='hidden';setTimeout(()=>{const f=$('#hmContinue').hidden?$('#hmNew'):$('#hmContinue');f&&f.focus()},50)}
+ function show(){fill();$('#toast').hidden=true;$('#hmShow').checked=pref;H.hidden=false;document.body.style.overflow='hidden';setTimeout(()=>{const f=$('#hmNew');f&&f.focus()},50)}
  function hide(){H.hidden=true;document.body.style.overflow=''}
  window.S21Home={show,hide};
- $('#bHome').onclick=show;$('#hmSkip').onclick=hide;$('#hmContinue').onclick=hide;
+ $('#bHome').onclick=show;$('#hmSkip').onclick=hide;
  $('#hmShow').onchange=e=>{pref=e.target.checked;try{localStorage.setItem('s21home',pref?'1':'0')}catch(x){}};
  $('#hmNew').onclick=()=>{if(!W.devs.length||confirm('Start a new empty topology? Unsaved work will be lost.')){hide();$('#bNew').click()}};
  $('#hmOpen').onclick=()=>{hide();$('#bLoad').click()};

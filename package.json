@@ -11,17 +11,14 @@
     "server": "node server/s21-server.js",
     "android:prep": "node scripts/prep-android.js",
     "dist:win": "electron-builder --win --x64 --publish never",
-    "dist:portable": "electron-builder --win portable --x64 --publish never",
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev"
+    "dist:portable": "electron-builder --win portable --x64 --publish never"
   },
   "devDependencies": {
     "@fontsource/nunito": "^5.0.0",
     "@fontsource/poppins": "^5.0.0",
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3",
-    "resedit": "^3.1.0",
-    "wrangler": "^4.160.1"
+    "resedit": "^3.1.0"
   },
   "build": {
     "appId": "com.smart21brain.smart21network",
