@@ -1,7 +1,0 @@
-{
-  "appId": "com.smart21brain.smart21network",
-  "appName": "Smart21network",
-  "webDir": "www",
-  "server": { "androidScheme": "https" },
-  "android": { "allowMixedContent": true, "backgroundColor": "#084F39" }
-}

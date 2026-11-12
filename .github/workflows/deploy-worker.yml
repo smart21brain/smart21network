@@ -1,0 +1,22 @@
+name: Deploy website + AI to Cloudflare
+# Deploys the Worker (website + Workers AI) using wrangler.jsonc. Needs 2 GitHub secrets:
+#   CLOUDFLARE_API_TOKEN  and  CLOUDFLARE_ACCOUNT_ID   (see DEPLOY-CLOUDFLARE.md)
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm run web:prep          # copies the web app into ./www
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
