@@ -1,0 +1,87 @@
+{
+  "name": "smart21network",
+  "version": "1.0.2",
+  "description": "Smart21network network simulator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "fonts": "node scripts/copy-fonts.js",
+    "postinstall": "node scripts/copy-fonts.js",
+    "server": "node server/s21-server.js",
+    "android:prep": "node scripts/prep-android.js",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:portable": "electron-builder --win portable --x64 --publish never",
+    "android:sync": "npm run android:prep && npx cap sync android"
+  },
+  "devDependencies": {
+    "@fontsource/nunito": "^5.0.0",
+    "@fontsource/poppins": "^5.0.0",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "resedit": "^3.1.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "build": {
+    "appId": "com.smart21brain.smart21network",
+    "productName": "Smart21network",
+    "files": [
+      "main.js",
+      "index.html",
+      "manifest.webmanifest",
+      "sw.js",
+      "icon-192.png",
+      "icon-512.png",
+      "build/app-icon.ico",
+      "build/icon.png",
+      "build/app-icon.png",
+      "fonts/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/app-icon.ico",
+      "signAndEditExecutable": false
+    },
+    "icon": "build/app-icon.ico",
+    "directories": {
+      "buildResources": "build"
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://smart21brain.com/updates/smart21network/"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/app-icon.ico",
+      "uninstallerIcon": "build/app-icon.ico",
+      "installerHeaderIcon": "build/app-icon.ico",
+      "createDesktopShortcut": true,
+      "shortcutName": "Smart21network",
+      "artifactName": "Smart21network-Setup-${version}.${ext}",
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "uninstallDisplayName": "Smart21network"
+    },
+    "afterPack": "scripts/after-pack.js"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.0"
+  },
+  "author": {
+    "name": "Smart21Brain",
+    "url": "https://smart21brain.com"
+  },
+  "homepage": "https://smart21brain.com"
+}
