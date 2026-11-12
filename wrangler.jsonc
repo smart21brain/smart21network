@@ -1,11 +1,18 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "smart21network",
-  "compatibility_date": "2026-11-10",
-  "observability": {
-    "enabled": true
-  },
+  "main": "worker/index.js",
+  "compatibility_date": "2025-09-01",
   "assets": {
-    "directory": "."
+    "directory": "./www",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "ai": { "binding": "AI" },
+  "vars": {
+    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct",
+    // "" = any website or app may use the AI (needed for the Android app and the Windows app).
+    // To limit it, list the addresses: "https://smart21network.smart21brain.com,https://localhost"
+    "ALLOWED_ORIGINS": ""
   }
 }
