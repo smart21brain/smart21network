@@ -15,8 +15,7 @@ jobs:
       - run: npm install
       - run: npm run web:prep          # copies the web app into ./www
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+        run: npx --yes wrangler@4 deploy      # wrangler 4 reads wrangler.jsonc (the action's default wrangler 3.90 cannot)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
