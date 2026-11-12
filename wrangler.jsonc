@@ -10,7 +10,8 @@
   },
   "ai": { "binding": "AI" },
   "vars": {
-    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct",
+    // Leave empty: the Worker tries llama-3.3-70b, glm-4.7-flash and gemma-4 in order. (Cloudflare retired llama-3.1-8b on 2026-05-30.)
+    "AI_MODEL": "",
     // "" = any website or app may use the AI (needed for the Android app and the Windows app).
     // To limit it, list the addresses: "https://smart21network.smart21brain.com,https://localhost"
     "ALLOWED_ORIGINS": ""

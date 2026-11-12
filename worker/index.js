@@ -4,9 +4,17 @@
      stream:false -> JSON:                { "answer": "full text" }
    GET  /  -> { ok:true, ai:true }   (open the Worker address in a browser to check it)
    Needs the Workers AI binding named  AI  (Dashboard -> Worker -> Settings -> Bindings -> Add -> Workers AI).
-   Optional variables: AI_MODEL (default @cf/meta/llama-3.1-8b-instruct), ALLOWED_ORIGINS ("https://a.com,https://localhost" - empty = any). */
+   Optional variables: AI_MODEL (your preferred model; leave empty for the built-in list), ALLOWED_ORIGINS ("https://a.com,https://localhost" - empty = any). */
 
-const DEFAULT_MODEL = '@cf/meta/llama-3.1-8b-instruct';
+/* Models are tried in this order until one answers. Cloudflare retired @cf/meta/llama-3.1-8b-instruct on 2026-05-30 (error 5028). */
+const MODELS = ['@cf/meta/llama-3.3-70b-instruct-fp8-fast', '@cf/zai-org/glm-4.7-flash', '@cf/google/gemma-4-26b-a4b-it'];
+const RETIRED = new Set(['@cf/meta/llama-3.1-8b-instruct', '@cf/meta/llama-3.1-8b-instruct-awq', '@cf/meta/llama-3.1-8b-instruct-fast', '@cf/meta/llama-3.1-8b-instruct-fp8', '@cf/meta/llama-3.1-70b-instruct',
+  '@cf/meta/llama-3-8b-instruct', '@cf/meta/llama-3-8b-instruct-awq', '@hf/meta-llama/meta-llama-3-8b-instruct', '@cf/meta/llama-3.2-1b-instruct', '@cf/meta/llama-3.2-3b-instruct', '@cf/google/gemma-3-12b-it']);
+function modelList(env) {
+  const pick = String((env && env.AI_MODEL) || '').trim();
+  const first = pick && /^@(cf|hf)\/[\w.\-\/]+$/.test(pick) && !RETIRED.has(pick) ? [pick] : [];   // your own choice first (retired ones are ignored)
+  return [...new Set([...first, ...MODELS])];
+}
 const MAX_TOKENS = 1024;
 
 const SYSTEM = [
@@ -63,7 +71,7 @@ export default {
     const cors = corsFor(request, env);
     if (api && env && env.ASSETS && url.pathname !== '/api/ai-assistant' && url.pathname !== '/api/ai') return json({ error: 'Not found.' }, 404, cors);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
-    if (request.method === 'GET') return json({ ok: true, ai: !!(env && env.AI), service: 'smart21network-ai', model: (env && env.AI_MODEL) || DEFAULT_MODEL }, 200, cors);
+    if (request.method === 'GET') return json({ ok: true, ai: !!(env && env.AI), service: 'smart21network-ai', models: modelList(env) }, 200, cors);
     if (request.method !== 'POST') return json({ error: 'Use POST.' }, 405, cors);
     if (!env || !env.AI) return json({ error: 'Workers AI binding "AI" is missing. In the Cloudflare dashboard open your Worker, then Settings, Bindings, Add, Workers AI, and name it AI.' }, 500, cors);
 
@@ -81,19 +89,20 @@ export default {
       if (c && c !== '{}') system += '\n\nCurrent network in the simulator (JSON, may be shortened):\n' + c.slice(0, 7000);
     }
     const messages = [{ role: 'system', content: system }, ...history, { role: 'user', content: prompt }];
-    const model = String(env.AI_MODEL || '').trim() || DEFAULT_MODEL;
     const wantStream = body.stream !== false;
-
-    try {
-      if (wantStream) {
-        const s = await env.AI.run(model, { messages, stream: true, max_tokens: MAX_TOKENS, temperature: 0.3 });
-        return new Response(toApp(s), { headers: { ...cors, 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' } });
-      }
-      const r = await env.AI.run(model, { messages, max_tokens: MAX_TOKENS, temperature: 0.3 });
-      const answer = (r && (r.response || (r.result && r.result.response))) || '';
-      return json({ answer: String(answer) }, 200, cors);
-    } catch (e) {
-      return json({ error: 'Workers AI error: ' + (e && e.message ? e.message : String(e)) }, 502, cors);
+    let lastErr = null;
+    for (const model of modelList(env)) {
+      try {
+        if (wantStream) {
+          const s = await env.AI.run(model, { messages, stream: true, max_tokens: MAX_TOKENS, temperature: 0.3 });
+          return new Response(toApp(s), { headers: { ...cors, 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no', 'X-AI-Model': model } });
+        }
+        const r = await env.AI.run(model, { messages, max_tokens: MAX_TOKENS, temperature: 0.3 });
+        const answer = (r && (r.response || (r.result && r.result.response) || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
+        if (answer) return json({ answer: String(answer) }, 200, { ...cors, 'X-AI-Model': model });
+        lastErr = new Error('empty answer from ' + model);
+      } catch (e) { lastErr = e; }          // model retired / unavailable / out of allowance: try the next one
     }
+    return json({ error: 'Workers AI error: ' + (lastErr && lastErr.message ? lastErr.message : 'no model answered') }, 502, cors);
   }
 };
