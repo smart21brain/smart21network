@@ -19,6 +19,7 @@ htmls.forEach(f => {
   [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].forEach(m => { try { JSON.parse(m[1]); } catch (e) { fail(rel + ': invalid JSON-LD'); } });
   if (!isApp && !/ld\+json/.test(h)) fail(rel + ': no structured data');
   [...h.matchAll(/<img\b[^>]*>/g)].forEach(m => { if (!/\balt=/.test(m[0])) fail(rel + ': image without alt text'); });
+  [...h.matchAll(/<link [^>]*rel="(?:shortcut icon|icon|apple-touch-icon)"[^>]*>/g)].forEach(m => { const hr = (m[0].match(/href="([^"]*)"/) || [])[1]; if (!hr || /^(data:|https?:)/.test(hr)) return; const u = hr.startsWith('/') ? hr : '/' + hr; if (!exists(u)) fail(rel + ': icon link points at a missing file ' + hr); });
   [...h.matchAll(/<a [^>]*href="(\/[^"]*)"/g)].forEach(m => { if (!exists(m[1])) fail(rel + ': broken link ' + m[1]); });
 });
 const sm = fs.readFileSync(path.join(www, 'sitemap.xml'), 'utf8');
