@@ -45,8 +45,8 @@ function page(p) {
     '<main class="w"><nav aria-label="Breadcrumb" style="font-size:.9rem;margin-top:1rem"><a href="/">Smart21network</a> › ' + esc(p.nav) + '</nav><h1>' + esc(p.h1) + '</h1><p class="lead">' + esc(p.lead) + '</p><a class="cta" href="/">' + cta + '</a>' +
     p.sections.map(block).join('') + '<h2>' + fq + '</h2>' + p.faq.map(f => '<details><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>').join('') +
     '<h2>' + rel + '</h2><ul class="rel">' + (p.related || []).map(s => '<li><a href="/' + s + '/">' + esc(bySlug[s].nav) + '</a></li>').join('') + '</ul><a class="cta" href="/">' + cta + '</a></main>' +
-    '<footer><div class="w"><ul class="fl">' + all.map(x => '<li><a href="/' + x.slug + '/">' + esc(x.nav) + '</a></li>').join('') + '<li><a href="https://smart21brain.com">Smart21Brain</a></li></ul>' +
-    '<p class="note">' + esc(p.note || NOTE_FALLBACK) + '</p><p>© ' + new Date().getFullYear() + ' Smart21Brain</p></div></footer></body></html>';
+    '<footer><div class="w"><ul class="fl">' + all.map(x => '<li><a href="/' + x.slug + '/">' + esc(x.nav) + '</a></li>').join('') + '</ul>' +
+    '<p class="note">' + esc(p.note || NOTE_FALLBACK) + '</p><p>© ' + new Date().getFullYear() + ' Smart21 Network · part of <a href="https://smart21brain.com">Smart21Brain</a></p></div></footer></body></html>';
 }
 const NOTE_FALLBACK = 'Smart21network is an independent learning tool by Smart21Brain. Product names belong to their owners.';
 
