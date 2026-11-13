@@ -1,6 +1,6 @@
 {
   "name": "smart21network",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Smart21network network simulator",
   "main": "main.js",
   "scripts": {
@@ -13,9 +13,10 @@
     "dist:win": "electron-builder --win --x64 --publish never",
     "dist:portable": "electron-builder --win portable --x64 --publish never",
     "android:sync": "npm run android:prep && npx cap sync android",
-    "web:prep": "node scripts/prep-android.js",
+    "web:prep": "node scripts/prep-web.js",
     "cf:dev": "npm run web:prep && npx wrangler dev",
-    "cf:deploy": "npm run web:prep && npx wrangler deploy"
+    "cf:deploy": "npm run web:prep && npx wrangler deploy",
+    "seo:check": "node scripts/seo-check.js"
   },
   "devDependencies": {
     "@fontsource/nunito": "^5.0.0",

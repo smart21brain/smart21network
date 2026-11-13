@@ -1,0 +1,29 @@
+// Checks the built website (./www) for common SEO mistakes. Run: npm run web:prep && npm run seo:check
+const fs = require('fs'), path = require('path');
+const www = path.join(__dirname, '..', 'www'), { SITE } = require('./seo-pages.js');
+let bad = 0; const fail = m => { bad++; console.log('✗ ' + m); };
+const htmls = []; (function walk(d) { fs.readdirSync(d).forEach(f => { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) { if (f !== 'fonts') walk(p); } else if (f.endsWith('.html')) htmls.push(p); }); })(www);
+const titles = new Map();
+const exists = u => { u = u.split('#')[0].split('?')[0]; if (!u) return true; const p = path.join(www, u); return fs.existsSync(p) && (fs.statSync(p).isFile() || fs.existsSync(path.join(p, 'index.html'))); };
+htmls.forEach(f => {
+  const rel = path.relative(www, f).replace(/\\/g, '/'), h = fs.readFileSync(f, 'utf8'), isApp = rel === 'index.html', is404 = rel === '404.html';
+  const t = (h.match(/<title>([\s\S]*?)<\/title>/) || [])[1]; if (!t) return fail(rel + ': no <title>');
+  if (t.length > 62) fail(rel + ': title is ' + t.length + ' characters (keep it at 60 or less)');
+  if (titles.has(t)) fail(rel + ': same title as ' + titles.get(t)); titles.set(t, rel);
+  if (is404) return;
+  const d = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1]; if (!d) fail(rel + ': no meta description'); else if (d.length < 70 || d.length > 165) fail(rel + ': description is ' + d.length + ' characters (aim for 70-160)');
+  const can = (h.match(/<link rel="canonical" href="([^"]*)"/) || [])[1], want = SITE + '/' + (isApp ? '' : rel.replace(/index\.html$/, ''));
+  if (can !== want) fail(rel + ': canonical is ' + can + ', expected ' + want);
+  if (!/property="og:image"/.test(h)) fail(rel + ': no og:image');
+  if (!isApp && (h.match(/<h1[ >]/g) || []).length !== 1) fail(rel + ': needs exactly one <h1>');
+  [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].forEach(m => { try { JSON.parse(m[1]); } catch (e) { fail(rel + ': invalid JSON-LD'); } });
+  if (!isApp && !/ld\+json/.test(h)) fail(rel + ': no structured data');
+  [...h.matchAll(/<img\b[^>]*>/g)].forEach(m => { if (!/\balt=/.test(m[0])) fail(rel + ': image without alt text'); });
+  [...h.matchAll(/<a [^>]*href="(\/[^"]*)"/g)].forEach(m => { if (!exists(m[1])) fail(rel + ': broken link ' + m[1]); });
+});
+const sm = fs.readFileSync(path.join(www, 'sitemap.xml'), 'utf8');
+[...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].forEach(m => { if (!m[1].startsWith(SITE)) return fail('sitemap: wrong host ' + m[1]); if (!exists(m[1].slice(SITE.length))) fail('sitemap: page missing ' + m[1]); });
+if (!/Sitemap: /.test(fs.readFileSync(path.join(www, 'robots.txt'), 'utf8'))) fail('robots.txt has no Sitemap line');
+['og-image.png', 'favicon.ico', '_headers', '404.html'].forEach(f => { if (!fs.existsSync(path.join(www, f))) fail('missing ' + f); });
+console.log(bad ? '\n' + bad + ' problem(s) found' : '✔ SEO check passed: ' + htmls.length + ' pages, ' + [...sm.matchAll(/<loc>/g)].length + ' sitemap URLs');
+process.exit(bad ? 1 : 0);

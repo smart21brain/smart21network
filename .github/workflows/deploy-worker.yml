@@ -14,6 +14,15 @@ jobs:
         with: { node-version: 20 }
       - run: npm install
       - run: npm run web:prep          # copies the web app into ./www
+      - name: Check Cloudflare secrets (shows only found / MISSING, never the value)
+        env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          A: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          ok=1
+          if [ -n "$T" ]; then echo "CLOUDFLARE_API_TOKEN: found (${#T} characters)"; else echo "CLOUDFLARE_API_TOKEN: MISSING"; ok=0; fi
+          if [ -n "$A" ]; then echo "CLOUDFLARE_ACCOUNT_ID: found (${#A} characters)"; else echo "CLOUDFLARE_ACCOUNT_ID: MISSING"; ok=0; fi
+          if [ "$ok" = 0 ]; then echo "Add the missing secret in THIS repository: Settings > Secrets and variables > Actions > Secrets tab > Repository secrets."; exit 1; fi
       - name: Deploy
         run: npx --yes wrangler@4 deploy      # wrangler 4 reads wrangler.jsonc (the action's default wrangler 3.90 cannot)
         env:
