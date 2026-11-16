@@ -1140,6 +1140,54 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
 .fa-wifi::before{content:"\f1eb"}
 .fa-xmark::before{content:"\f00d"}
 </style>
+<style id="s21Mobile">
+/* ===== Phone + tablet arrangement and layers (kept last so it wins over older rules) =====
+   Layer order, bottom to top:  canvas 0 < info bar 4 < minimap 5 < palette 6 < menus 60 < Ask AI button 800 < AI panel 810 */
+@media (max-width:760px){
+  /* header: logo, search, language and theme on ONE row (was two rows) */
+  body #hdr .top-inner{flex-wrap:nowrap!important;height:auto!important;min-height:52px;padding:.4rem .6rem!important;gap:.45rem!important}
+  body #hdr .gsearch{order:0!important;flex:1 1 0!important;min-width:0!important;max-width:none!important}
+  body #hdr .gsearch input{min-width:0;text-overflow:ellipsis}
+  body #hdr .top-actions{margin-left:0!important;flex:0 0 auto}
+  /* workspace: nothing may sit on top of the devices or the palette */
+  body #hint{display:none!important}
+  body #mini{transform:scale(.6);transform-origin:left bottom;left:8px!important;right:auto!important;bottom:8px!important;z-index:5;opacity:.9}
+  body #palette{padding-bottom:env(safe-area-inset-bottom,0px);z-index:6}
+  /* the palette is a floating strip: keep its height free so it never covers the canvas or the Event list bar */
+  body .center-col{box-sizing:border-box;padding-bottom:calc(var(--s21-pal-h,72px) + env(safe-area-inset-bottom,0px))}
+  body .floating-stack{right:12px!important;bottom:calc(var(--s21-pal-h,72px) + var(--s21-bot-h,40px) + env(safe-area-inset-bottom,0px) + 12px)!important;z-index:800}
+  body #s21-ai-panel{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;bottom:calc(var(--s21-pal-h,72px) + env(safe-area-inset-bottom,0px) + 14px)!important;height:min(72vh,calc(100dvh - 200px))!important;max-height:none!important;z-index:810}
+  body #toast{z-index:900}
+  /* pop-up panels (Activity, labs, share...) sit ABOVE the Ask AI button, never under it */
+  body .modal, body #mAct{z-index:850!important}
+  /* pages that have their own bottom bar: the Ask AI button moves clear of it */
+  html[data-s21pg="home"] body .floating-stack{bottom:calc(env(safe-area-inset-bottom,0px) + 16px)!important}
+  html[data-s21pg="home"] .brand-foot{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 86px)}   /* footer text stays above the Ask AI pill */
+  html[data-s21pg="new"] body .floating-stack{bottom:calc(env(safe-area-inset-bottom,0px) + var(--s21-np-h,68px) + 14px)!important}
+  /* start page: tidy equal-size buttons */
+  body .home-hero .hm-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:.55rem}
+  body .home-hero .hm-actions .hm-btn{width:100%;min-height:48px;justify-content:center;text-align:center}
+  body .home-hero .hm-actions .hm-btn.pri{grid-column:auto}
+  body .home-hero{padding:1.4rem 1.2rem}
+}
+/* phone held sideways: little height, so a smaller button close to the corner */
+@media (max-width:760px) and (max-height:520px){
+  body .floating-stack{right:8px!important;bottom:calc(var(--s21-pal-h,72px) + var(--s21-bot-h,40px) + 8px)!important}
+  body .floating-stack .fab-avatar{width:44px!important;height:44px!important}
+  body #xpTabs{display:none!important}   /* the lab tab strip is hidden sideways: the network needs the height */
+  html[data-s21pg="home"] body .floating-stack{bottom:10px!important}
+  html[data-s21pg="new"] body .floating-stack{bottom:calc(var(--s21-np-h,68px) + 8px)!important}
+}
+@media (min-width:761px) and (max-width:1100px){
+  body .floating-stack{bottom:22px!important;right:18px!important}
+}
+@media (min-width:761px){
+  /* New project page: the Create button sits above the Ask AI button, never under it */
+  body #newPage .np-prev{padding-bottom:calc(1.2rem + 78px)}
+  /* smaller minimap in the corner so it covers less of the network */
+  body #mini{transform:scale(.75);transform-origin:right bottom;bottom:10px!important;right:10px!important}
+}
+</style>
 </head><body><div id="s21Splash" aria-hidden="true">
 <div class="stage"><svg viewBox="0 0 240 240"><defs><linearGradient id="s21g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21C03A"/><stop offset="1" stop-color="#FFB800"/></linearGradient></defs><circle cx="120" cy="120" r="108" fill="none" stroke="#3a403e" stroke-width="2"/><g class="spin"><circle cx="120" cy="120" r="108" fill="none" stroke="url(#s21g)" stroke-width="12" stroke-linecap="round" stroke-dasharray="500 679" transform="rotate(-90 120 120)"/></g></svg><img src="icon-192.png?v=3" alt=""></div>
 <div class="pw">Powered by<b>Smart21<span>Brain</span></b></div>
@@ -2705,13 +2753,14 @@ addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()===
 const mini=$('#mini');let mh='';
 function drawMini(){if(!W.devs.length){mini.innerHTML='';return}const r=cvr(),xs=W.devs.map(d=>d.x),ys=W.devs.map(d=>d.y);
  const vx0=-st.vx/st.z,vy0=-st.vy/st.z,vw=r.width/st.z,vh=r.height/st.z;
+ const fit=vx0<=Math.min(...xs)-20&&vy0<=Math.min(...ys)-20&&vx0+vw>=Math.max(...xs)+20&&vy0+vh>=Math.max(...ys)+20;mini.style.display=fit?'none':'';   /* whole network already in view: no minimap covering it */
  const x0=Math.min(...xs,vx0)-40,x1=Math.max(...xs,vx0+vw)+40,y0=Math.min(...ys,vy0)-40,y1=Math.max(...ys,vy0+vh)+40,k=Math.min(170/(x1-x0),110/(y1-y0));
  const h=[x0,y0,x1,y1,vx0,vy0,vw,vh,W.devs.length,W.links.length].join('|');if(h===mh)return;mh=h;mini._m={x0,y0,k};
  const col={router:'#0B6E4F',l3sw:'#12906A'};
  let o='';(W.links||[]).forEach(l=>{const a=W.get(l.a),b=W.get(l.b);if(a&&b)o+=`<line x1="${(a.x-x0)*k}" y1="${(a.y-y0)*k}" x2="${(b.x-x0)*k}" y2="${(b.y-y0)*k}" stroke="#7a8ea3" stroke-width="1"/>`});
  W.devs.forEach(d=>o+=`<circle cx="${(d.x-x0)*k}" cy="${(d.y-y0)*k}" r="3.2" fill="${d.on?(col[d.role]||'#2d8a4e'):'#999'}"/>`);
  o+=`<rect x="${(vx0-x0)*k}" y="${(vy0-y0)*k}" width="${vw*k}" height="${vh*k}" fill="#0B6E4F22" stroke="#E8B334" stroke-width="1.5"/>`;mini.innerHTML=o}
-mini.addEventListener('pointerdown',e=>{const m=mini._m;if(!m)return;const b=mini.getBoundingClientRect(),wx=(e.clientX-b.left)/m.k+m.x0,wy=(e.clientY-b.top)/m.k+m.y0,r=cvr();st.vx=r.width/2-wx*st.z;st.vy=r.height/2-wy*st.z;render()});
+mini.addEventListener('pointerdown',e=>{const m=mini._m;if(!m)return;const b=mini.getBoundingClientRect(),sx=(b.width/170)||1,sy=(b.height/110)||1,wx=(e.clientX-b.left)/sx/m.k+m.x0,wy=(e.clientY-b.top)/sy/m.k+m.y0,r=cvr();st.vx=r.width/2-wx*st.z;st.vy=r.height/2-wy*st.z;render()});
 setInterval(drawMini,400);
 /* arrange */
 $('#arr').onchange=e=>{const m=e.target.value;e.target.value='';e.target.blur();if(!m)return;const ids=selIds();let L=ids?ids.map(i=>W.get(i)).filter(Boolean):W.devs.slice();if(L.length<2){toast('Select two or more devices (Shift+click) to align them');return}
@@ -6167,5 +6216,20 @@ var fa = window.S21fa = function (n, c) { return '<i class="fa-solid fa-' + n + 
   new MutationObserver(sync).observe(vp, { attributes: true, attributeFilter: ['transform'] });
   sync();
 })();
+</script>
+<script>/* phones: start with the Event list minimised so the network gets the screen (it opens by itself when packets move) */
+(function(){try{
+  var pal=document.getElementById('palette');
+  var bot=document.getElementById('bottom');
+  function setPal(){var s=document.documentElement.style;if(pal)s.setProperty('--s21-pal-h',pal.offsetHeight+'px');if(bot)s.setProperty('--s21-bot-h',bot.offsetHeight+'px')}
+  function vis(e){return !!(e&&!e.hidden&&e.getClientRects().length)}
+  function pg(){var d=document.documentElement,np=document.getElementById('newPage'),bar=np&&np.querySelector('.np-prev');
+    d.setAttribute('data-s21pg',vis(document.getElementById('home'))?'home':vis(np)?'new':'');
+    if(bar&&vis(np))d.style.setProperty('--s21-np-h',bar.offsetHeight+'px')}
+  pg();new MutationObserver(pg).observe(document.body,{attributes:true,attributeFilter:['hidden','style','class'],subtree:true,childList:true});
+  setPal();addEventListener('resize',setPal);addEventListener('resize',pg);addEventListener('orientationchange',setPal);if(window.ResizeObserver){var ro=new ResizeObserver(setPal);pal&&ro.observe(pal);bot&&ro.observe(bot)}
+  if(!(window.matchMedia&&matchMedia('(max-width:760px)').matches))return;
+  var b=document.getElementById('bottom'),t=document.getElementById('bMin');if(b&&t&&!b.classList.contains('min')){b.classList.add('min');t.textContent='▴'}
+}catch(e){}})();
 </script>
 </body></html>
