@@ -1169,6 +1169,32 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
   body .home-hero .hm-actions .hm-btn{width:100%;min-height:48px;justify-content:center;text-align:center}
   body .home-hero .hm-actions .hm-btn.pri{grid-column:auto}
   body .home-hero{padding:1.4rem 1.2rem}
+  /* ---- New project page, made for thumbs ---- */
+  html[data-s21pg="new"] body .floating-stack .fab-avatar{width:54px!important;height:54px!important;padding:0!important}
+  html[data-s21pg="new"] body .floating-stack .fab-label{display:none!important}
+  body #newPage .np-rail{flex-wrap:nowrap!important;overflow-x:auto;gap:.4rem;padding:.45rem .6rem!important;scrollbar-width:none}
+  body #newPage .np-rail::-webkit-scrollbar{display:none}
+  body #newPage .np-rail button{flex:0 0 auto;white-space:nowrap;min-height:44px;padding:.5rem .95rem}
+  body #newPage .np-main{padding:.8rem .8rem calc(1.2rem + 64px)!important}   /* last card can scroll up above the Ask AI button */
+  body #newPage .np-rail [data-np="back"]{order:-1;padding:.5rem .8rem}
+  body #newPage .np-rail [data-np="back"] span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}   /* arrow only, label stays for screen readers */
+  body #newPage .np-head h1{font-size:1.3rem;margin-bottom:.6rem}
+  body #newPage .np-search{max-width:none;min-height:46px;font-size:1rem}
+  body #newPage .np-filters{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;margin:.6rem -.8rem .2rem;padding:0 .8rem}
+  body #newPage .np-filters::-webkit-scrollbar{display:none}
+  body #newPage .np-chip{flex:0 0 auto;min-height:40px;padding:.35rem 1rem;font-size:.9rem}
+  body #newPage .np-grid{grid-template-columns:1fr!important;gap:.6rem}
+  body #newPage .np-card{display:grid!important;grid-template-columns:96px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:.8rem;row-gap:.15rem;align-items:start;padding:.55rem;min-height:84px;transform:none!important}
+  body #newPage .np-card .np-thumb{grid-row:1 / span 2;width:96px!important;height:72px!important;border-radius:10px;overflow:hidden}
+  body #newPage .np-card b{font-size:.98rem;align-self:end}
+  body #newPage .np-card small{-webkit-line-clamp:3;font-size:.8rem}
+  /* bottom bar: Create on the LEFT, big enough for a thumb; the Ask AI button floats above the bar */
+  body #newPage .np-prev{display:flex!important;flex-direction:row!important;align-items:center;gap:.8rem;padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom,0px))!important}
+  body #newPage .np-prev h2{order:2;flex:1 1 auto;min-width:0;margin:0;font-size:.92rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body #newPage #npCreate{order:1;flex:0 0 auto;min-width:132px;min-height:48px;margin:0!important;align-self:center;font-size:1rem;border-radius:14px}
+  /* optional: Ask AI button on the left (Settings > Ask AI button) */
+  html[data-s21fab="left"] body .floating-stack{left:12px!important;right:auto!important}
+  html[data-s21fab="left"] body #mini{left:auto!important;right:8px!important;transform-origin:right bottom}
 }
 /* phone held sideways: little height, so a smaller button close to the corner */
 @media (max-width:760px) and (max-height:520px){
@@ -4406,6 +4432,7 @@ window.S21AI={getContext:function(){var ctx={page:'smart21network'};try{
       '<label>Text size (windows, chat, tables)<select class="in" id="sFs"><option value="s"' + (SET.fs === 's' ? ' selected' : '') + '>Small</option><option value="m"' + (SET.fs === 'm' ? ' selected' : '') + '>Normal</option><option value="l"' + (SET.fs === 'l' ? ' selected' : '') + '>Large</option></select></label>' +
       '<label>Sound effects<select class="in" id="sSnd"><option value="1"' + (SET.sound ? ' selected' : '') + '>On</option><option value="0"' + (!SET.sound ? ' selected' : '') + '>Off</option></select></label>' +
       '<label>Volume<input class="in" id="sVol" type="range" min="0.1" max="1" step="0.1" value="' + SET.vol + '"></label>' +
+      '<label>Ask AI button on phones<select class="in" id="sFab"><option value="right"' + (localStorage.getItem('s21.fabSide') !== 'left' ? ' selected' : '') + '>Right side</option><option value="left"' + (localStorage.getItem('s21.fabSide') === 'left' ? ' selected' : '') + '>Left side</option></select></label>' +
       '<label>AI server address<input class="in" id="sEp" placeholder="https://smart21network.smart21brain.com/api/ai-assistant" value="' + esc(ep) + '"></label></div>' +
       '<p class="muted">Sound effects play for packets, links going up or down, and when you earn XP.</p>' +
       '<pre id="sAiOut" class="muted" style="white-space:pre-wrap;font:inherit;font-size:.82rem;margin:.4rem 0"></pre>' +
@@ -4413,6 +4440,7 @@ window.S21AI={getContext:function(){var ctx={page:'smart21network'};try{
     $('#sLang', box).onchange = function () { try { localStorage.setItem('s21-lang', this.value); } catch (e) {} if (P.applyLang) P.applyLang(); trApply(); };
     $('#sTheme', box).onchange = function () { var cur = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'; if (cur !== this.value) { var b = $('#bTheme'); if (b) b.click(); } };
     $('#sFs', box).onchange = function () { SET.fs = this.value; saveSet(); applyFs(); };
+    $('#sFab', box).onchange = function () { try { localStorage.setItem('s21.fabSide', this.value); } catch (e) {} document.documentElement.setAttribute('data-s21fab', this.value === 'left' ? 'left' : 'right'); };
     $('#sSnd', box).onchange = function () { SET.sound = this.value === '1'; saveSet(); if (SET.sound) SND.up(); };
     $('#sVol', box).oninput = function () { SET.vol = +this.value; saveSet(); };
     $('#sVol', box).onchange = function () { SND.hop(); };
@@ -6224,8 +6252,9 @@ var fa = window.S21fa = function (n, c) { return '<i class="fa-solid fa-' + n + 
   function setPal(){var s=document.documentElement.style;if(pal)s.setProperty('--s21-pal-h',pal.offsetHeight+'px');if(bot)s.setProperty('--s21-bot-h',bot.offsetHeight+'px')}
   function vis(e){return !!(e&&!e.hidden&&e.getClientRects().length)}
   function pg(){var d=document.documentElement,np=document.getElementById('newPage'),bar=np&&np.querySelector('.np-prev');
-    d.setAttribute('data-s21pg',vis(document.getElementById('home'))?'home':vis(np)?'new':'');
+    d.setAttribute('data-s21pg',vis(np)?'new':vis(document.getElementById('home'))?'home':'');
     if(bar&&vis(np))d.style.setProperty('--s21-np-h',bar.offsetHeight+'px')}
+  try{document.documentElement.setAttribute('data-s21fab',localStorage.getItem('s21.fabSide')==='left'?'left':'right')}catch(e){}
   pg();new MutationObserver(pg).observe(document.body,{attributes:true,attributeFilter:['hidden','style','class'],subtree:true,childList:true});
   setPal();addEventListener('resize',setPal);addEventListener('resize',pg);addEventListener('orientationchange',setPal);if(window.ResizeObserver){var ro=new ResizeObserver(setPal);pal&&ro.observe(pal);bot&&ro.observe(bot)}
   if(!(window.matchMedia&&matchMedia('(max-width:760px)').matches))return;
