@@ -1169,6 +1169,26 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
   body .home-hero .hm-actions .hm-btn{width:100%;min-height:48px;justify-content:center;text-align:center}
   body .home-hero .hm-actions .hm-btn.pri{grid-column:auto}
   body .home-hero{padding:1.4rem 1.2rem}
+  /* ---- device details as a bottom sheet (same panel as on the computer): the network stays visible above it ---- */
+  body .rdock{position:fixed!important;left:0!important;right:0!important;top:auto!important;bottom:0!important;width:auto!important;height:min(58dvh,520px)!important;border-left:0!important;border-top:1px solid var(--bd);border-radius:18px 18px 0 0;box-shadow:0 -12px 34px rgba(0,0,0,.55)!important;z-index:30;padding-bottom:env(safe-area-inset-bottom,0px)}
+  body .rdock.s21-full{height:calc(100dvh - 130px)!important}
+  body .rdock::before{content:'';display:block;flex:none;width:44px;height:5px;border-radius:3px;background:var(--mut);opacity:.55;margin:8px auto 4px;cursor:pointer}
+  html[data-s21sheet="1"] body .floating-stack{z-index:25!important}
+  /* ---- device palette in two rows: categories on top (1), devices below (2) ---- */
+  body #palette{display:flex!important;flex-direction:column!important;gap:0!important;height:auto!important;max-height:none!important;overflow:hidden!important;padding:0!important}
+  body #palette .ptabs{flex:0 0 auto;width:100%;box-sizing:border-box;display:flex;justify-content:space-around;gap:.3rem;padding:.3rem .6rem;border-bottom:1px solid var(--bd);position:static!important}
+  body #palette .ptab{flex:1 1 0;max-width:80px;min-height:40px}
+  body #palette .pi-grid{flex:1 1 auto;display:flex!important;flex-direction:row;gap:.45rem;overflow-x:auto;overflow-y:hidden;padding:.35rem .6rem calc(.45rem + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+  body #palette .pitem{flex:0 0 auto}
+  /* ---- toolbar: arrow to show every tool ---- */
+  body #toolbar.ribbon{scrollbar-width:none}
+  body #toolbar.ribbon::-webkit-scrollbar{display:none}
+  body #toolbar #s21RibMore{display:none;position:sticky;right:0;flex:0 0 auto;margin-left:auto;z-index:3;width:42px;height:42px;padding:0;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;background:var(--gold,#ffd166);color:#2a2000;border:0;box-shadow:-12px 0 14px 6px var(--rbg2,#10211a),0 3px 10px rgba(0,0,0,.4)}
+  body #toolbar.s21-over #s21RibMore{display:inline-flex}
+  body #toolbar #s21RibMore svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  body #toolbar.s21-open #s21RibMore svg{transform:rotate(-90deg)}
+  body #toolbar.s21-open{flex-wrap:wrap!important;overflow:visible!important;height:auto!important;row-gap:.3rem;padding-bottom:.4rem!important}
+  body #toolbar.s21-open .sep{display:none}
   /* ---- New project page, made for thumbs ---- */
   html[data-s21pg="new"] body .floating-stack .fab-avatar{width:54px!important;height:54px!important;padding:0!important}
   html[data-s21pg="new"] body .floating-stack .fab-label{display:none!important}
@@ -1198,6 +1218,7 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
 }
 /* phone held sideways: little height, so a smaller button close to the corner */
 @media (max-width:760px) and (max-height:520px){
+  body .rdock{height:min(72dvh,280px)!important}
   body .floating-stack{right:8px!important;bottom:calc(var(--s21-pal-h,72px) + var(--s21-bot-h,40px) + 8px)!important}
   body .floating-stack .fab-avatar{width:44px!important;height:44px!important}
   body #xpTabs{display:none!important}   /* the lab tab strip is hidden sideways: the network needs the height */
@@ -1214,11 +1235,24 @@ i.fa-solid.ic{width:1.2em;height:1.2em;line-height:1.2em;font-size:1em;fill:none
   body #mini{transform:scale(.75);transform-origin:right bottom;bottom:10px!important;right:10px!important}
 }
 </style>
+<style id="s21LangCss">
+#s21LangAsk{position:fixed;inset:0;z-index:950;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,10,7,.8);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:s21la .25s ease}
+@keyframes s21la{from{opacity:0}to{opacity:1}}
+#s21LangAsk .box{width:min(420px,100%);box-sizing:border-box;background:#10211a;color:#fff;border:1px solid #234a3a;border-radius:24px;padding:26px 22px 22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+#s21LangAsk img{width:76px;height:76px;border-radius:50%;margin-bottom:8px}
+#s21LangAsk h2{margin:.2rem 0 .3rem;font-size:1.35rem;line-height:1.25}
+#s21LangAsk p{margin:0 0 .6rem;color:#a9bdb3;font-size:.95rem}
+#s21LangAsk button{display:flex;flex-direction:column;align-items:center;width:100%;min-height:64px;margin:.55rem 0 0;border:0;border-radius:16px;padding:.7rem 1rem;font:inherit;cursor:pointer}
+#s21LangAsk button b{font-size:1.15rem}#s21LangAsk button span{font-size:.85rem;opacity:.85}
+#s21LangAsk button.en{background:linear-gradient(135deg,#ffe08a,#f5b942);color:#2a2000}
+#s21LangAsk button.sw{background:linear-gradient(135deg,#21c03a,#0b8f4d);color:#fff}
+#s21LangAsk button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+</style>
 </head><body><div id="s21Splash" aria-hidden="true">
 <div class="stage"><svg viewBox="0 0 240 240"><defs><linearGradient id="s21g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21C03A"/><stop offset="1" stop-color="#FFB800"/></linearGradient></defs><circle cx="120" cy="120" r="108" fill="none" stroke="#3a403e" stroke-width="2"/><g class="spin"><circle cx="120" cy="120" r="108" fill="none" stroke="url(#s21g)" stroke-width="12" stroke-linecap="round" stroke-dasharray="500 679" transform="rotate(-90 120 120)"/></g></svg><img src="icon-192.png?v=3" alt=""></div>
 <div class="pw">Powered by<b>Smart21<span>Brain</span></b></div>
 </div>
-<script>(function(){var el=document.getElementById('s21Splash'),done=false;function hide(){if(done)return;done=true;setTimeout(function(){el.classList.add('hide');setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},600)},Math.max(0,1400-performance.now()))}
+<script>(function(){var el=document.getElementById('s21Splash'),done=false;function hide(){if(done)return;done=true;setTimeout(function(){el.classList.add('hide');try{document.dispatchEvent(new Event('s21:splash-done'))}catch(e){}setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},600)},Math.max(0,1400-performance.now()))}
 if(document.readyState==='complete')hide();else addEventListener('load',hide);setTimeout(hide,7000)})();</script>
 <noscript><div style="font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6"><h1>Smart21network – free online network simulator</h1><p>Build networks with routers, switches, MikroTik devices and Wi-Fi, configure them with Cisco IOS and RouterOS commands and watch packets travel. This app needs JavaScript. Please enable it to open the simulator.</p><ul><li><a href="/network-simulator/">Free online network simulator</a></li><li><a href="/mikrotik-simulator/">MikroTik RouterOS simulator</a></li><li><a href="/ccna-lab-practice/">CCNA lab practice</a></li><li><a href="/vlan-lab/">VLAN and trunk lab</a></li><li><a href="/ospf-lab/">OSPF routing lab</a></li><li><a href="/nat-acl-firewall-lab/">NAT, ACL and firewall lab</a></li><li><a href="/wifi-network-simulator/">Wi-Fi network simulator</a></li><li><a href="/packet-tracer-alternative/">Packet Tracer alternative</a></li><li><a href="/network-simulator-for-schools/">Network simulator for schools</a></li><li><a href="/ai-network-assistant/">AI network assistant</a></li><li><a href="/sw/">Kiswahili</a></li></ul></div></noscript>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="ic-file-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M9 15h6" /> <path d="M12 18v-6" /></symbol><symbol id="ic-folder-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" /></symbol><symbol id="ic-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /> <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" /> <path d="M7 3v4a1 1 0 0 0 1 1h7" /></symbol><symbol id="ic-flask-conical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" /> <path d="M6.453 15h11.094" /> <path d="M8.5 2h7" /></symbol><symbol id="ic-undo-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5" /> <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></symbol><symbol id="ic-redo-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5" /> <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13" /></symbol><symbol id="ic-mouse-pointer-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z" /></symbol><symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" /></symbol><symbol id="ic-trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /> <path d="M14 11v6" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /> <path d="M3 6h18" /> <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></symbol><symbol id="ic-sticky-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" /> <path d="M15 3v5a1 1 0 0 0 1 1h5" /></symbol><symbol id="ic-shapes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" /> <rect x="3" y="14" width="7" height="7" rx="1" /> <circle cx="17.5" cy="17.5" r="3.5" /></symbol><symbol id="ic-clipboard-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /> <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /> <path d="m9 14 2 2 4-4" /></symbol><symbol id="ic-graduation-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /> <path d="M22 10v6" /> <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" /></symbol><symbol id="ic-share-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" /> <circle cx="6" cy="12" r="3" /> <circle cx="18" cy="19" r="3" /> <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /> <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></symbol><symbol id="ic-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol><symbol id="ic-hm-house" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol><symbol id="ic-hm-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /> <path d="M12 5v14" /></symbol><symbol id="ic-hm-folder-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" /></symbol><symbol id="ic-hm-flask-conical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" /> <path d="M6.453 15h11.094" /> <path d="M8.5 2h7" /></symbol><symbol id="ic-hm-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></symbol><symbol id="ic-hm-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16" /> <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol><symbol id="ic-hm-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8h.01" /> <path d="M12 12h.01" /> <path d="M14 8h.01" /> <path d="M16 12h.01" /> <path d="M18 8h.01" /> <path d="M6 8h.01" /> <path d="M7 16h10" /> <path d="M8 12h.01" /> <rect width="20" height="16" x="2" y="4" rx="2" /></symbol><symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol><symbol id="ic-mail-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" /> <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /> <path d="M19 16v6" /> <path d="M16 19h6" /></symbol><symbol id="ic-cable" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 19a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1z" /> <path d="M17 21v-2" /> <path d="M19 14V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V10" /> <path d="M21 21v-2" /> <path d="M3 5V3" /> <path d="M4 10a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a2 2 0 0 1-2 2z" /> <path d="M7 5V3" /></symbol><symbol id="ic-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></symbol><symbol id="ic-zoom-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /> <line x1="21" x2="16.65" y1="21" y2="16.65" /> <line x1="11" x2="11" y1="8" y2="14" /> <line x1="8" x2="14" y1="11" y2="11" /></symbol><symbol id="ic-zoom-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /> <line x1="21" x2="16.65" y1="21" y2="16.65" /> <line x1="8" x2="14" y1="11" y2="11" /></symbol><symbol id="ic-maximize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3" /> <path d="M21 8V5a2 2 0 0 0-2-2h-3" /> <path d="M3 16v3a2 2 0 0 0 2 2h3" /> <path d="M16 21h3a2 2 0 0 0 2-2v-3" /></symbol><symbol id="ic-circle-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /> <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /> <path d="M12 17h.01" /></symbol><symbol id="ic-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1" /> <rect x="2" y="16" width="6" height="6" rx="1" /> <rect x="9" y="2" width="6" height="6" rx="1" /> <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" /> <path d="M12 12V8" /></symbol><symbol id="ic-router" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="14" rx="2" /> <path d="M6.01 18H6" /> <path d="M10.01 18H10" /> <path d="M15 10v4" /> <path d="M17.84 7.17a4 4 0 0 0-5.66 0" /> <path d="M20.66 4.34a8 8 0 0 0-11.31 0" /></symbol><symbol id="ic-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01" /> <path d="M2 8.82a15 15 0 0 1 20 0" /> <path d="M5 12.859a10 10 0 0 1 14 0" /> <path d="M8.5 16.429a5 5 0 0 1 7 0" /></symbol><symbol id="ic-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></symbol><symbol id="ic-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h8" /> <path d="m4 17 6-6-6-6" /></symbol><symbol id="ic-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" /> <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" /></symbol>
@@ -2242,10 +2276,10 @@ cv.addEventListener('pointerdown',e=>{const g=e.target.closest('.dev'),hit=e.tar
  if(st.tool==='delete'){if(g){delDev(W.get(g.dataset.id))}else if(hit&&hit.dataset.c){W.cons=W.cons.filter(c=>c.id!==hit.dataset.c);log('Console cable deleted');changed()}else if(hit){W.disconnect(W.links.find(l=>l.id===hit.dataset.l));log('Cable deleted');changed()}else if(nt){W.notes.splice(+nt.dataset.i,1);changed()}return}
  if(g){const d=W.get(g.dataset.id);if(st.tool==='cable')return cableClick(e,d);if(st.tool==='pdu')return pduClick(d);if(st.tool==='inspect'){inspect(d);return}if(st.tool==='cpdu'){cpduOpen(d);return}
   if(e.shiftKey){if(!st.msel.length&&st.sel)st.msel=[st.sel];const k=st.msel.indexOf(d.id);if(k>=0)st.msel.splice(k,1);else st.msel.push(d.id);st.sel=null;render();return}
-  const now=Date.now();if(lastTap.id===d.id&&now-lastTap.t<380){lastTap.t=0;openWin(d,'config');return}lastTap={id:d.id,t:now};st.sel=d.id;st.ssel=null;if(!st.msel.includes(d.id))st.msel=[];const p=wpt(e);drag={d,dx:p.x-d.x,dy:p.y-d.y,moved:false,g:st.msel.length>1?st.msel.map(id=>W.get(id)).filter(Boolean):null};cv.setPointerCapture(e.pointerId);render();return}
+  const now=Date.now();if(lastTap.id===d.id&&now-lastTap.t<380){lastTap.t=0;openWin(d,'config');return}lastTap={id:d.id,t:now};st.sel=d.id;st.ssel=null;if(!st.msel.includes(d.id))st.msel=[];const p=wpt(e);drag={d,dx:p.x-d.x,dy:p.y-d.y,sx:e.clientX,sy:e.clientY,moved:false,g:st.msel.length>1?st.msel.map(id=>W.get(id)).filter(Boolean):null};cv.setPointerCapture(e.pointerId);render();return}
  if(st.tool==='note'){const t=prompt('Note text');if(t){const p=wpt(e);W.notes.push({x:p.x,y:p.y,t:t.slice(0,80)});changed()}return}
  if(st.cs){st.cs=null;setHint(DEF_HINT)}if(e.shiftKey&&st.tool==='select'){const p=wpt(e);band={x0:p.x,y0:p.y,x1:p.x,y1:p.y};cv.setPointerCapture(e.pointerId);st.sel=null;render();return}st.sel=null;st.msel=[];st.ssel=null;pan={sx:e.clientX,sy:e.clientY,vx:st.vx,vy:st.vy};cv.setPointerCapture(e.pointerId);render()});
-cv.addEventListener('pointermove',e=>{const p=wpt(e);st.mx=p.x;st.my=p.y;if(drag){drag.moved=true;{const nx=Math.round((p.x-drag.dx)/5)*5,ny=Math.round((p.y-drag.dy)/5)*5;if(drag.g){const ax=nx-drag.d.x,ay=ny-drag.d.y;drag.g.forEach(m=>{m.x+=ax;m.y+=ay})}else{drag.d.x=nx;drag.d.y=ny}}rr()}else if(pan){st.vx=pan.vx+e.clientX-pan.sx;st.vy=pan.vy+e.clientY-pan.sy;rr()}else if(st.cs)rr()});
+cv.addEventListener('pointermove',e=>{const p=wpt(e);st.mx=p.x;st.my=p.y;if(drag){if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<(e.pointerType==='mouse'?3:12))return;drag.moved=true;{const nx=Math.round((p.x-drag.dx)/5)*5,ny=Math.round((p.y-drag.dy)/5)*5;if(drag.g){const ax=nx-drag.d.x,ay=ny-drag.d.y;drag.g.forEach(m=>{m.x+=ax;m.y+=ay})}else{drag.d.x=nx;drag.d.y=ny}}rr()}else if(pan){st.vx=pan.vx+e.clientX-pan.sx;st.vy=pan.vy+e.clientY-pan.sy;rr()}else if(st.cs)rr()});
 cv.addEventListener('pointerup',()=>{if(drag){if(drag.moved)changed();else if(st.win!==drag.d.id)openWin(drag.d,'details')}drag=null;pan=null});
 cv.addEventListener('wheel',e=>{e.preventDefault();const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,k=e.deltaY<0?1.12:1/1.12,nz=Math.min(2.5,Math.max(.3,st.z*k));st.vx=mx-(mx-st.vx)*nz/st.z;st.vy=my-(my-st.vy)*nz/st.z;st.z=nz;rr()},{passive:false});
 function zoom(k){const r=cv.getBoundingClientRect(),mx=r.width/2,my=r.height/2,nz=Math.min(2.5,Math.max(.3,st.z*k));st.vx=mx-(mx-st.vx)*nz/st.z;st.vy=my-(my-st.vy)*nz/st.z;st.z=nz;render()}
@@ -2482,7 +2516,8 @@ function detailsTab(d,b){const x=DET[d.type]||{v:'',m:SPEC[d.type].l,os:'',lay:'
  <div class="det-acts"><button class="btn pri" data-go="config">Open configuration</button>${d.cli||d.role==='host'?`<button class="btn" data-go="cli">${d.role==='host'?'Command prompt':'Open CLI'}</button>`:''}</div>`;
  $$('[data-go]',b).forEach(e=>e.onclick=()=>{st.tab=e.dataset.go;drawer()})}
 function closeWin(){st.win=null;$('#drawer').hidden=true}
-function openWin(d,tab){st.win=d.id;st.sel=d.id;st.tab=tab||'config';drawer();render()}
+function openWin(d,tab){st.win=d.id;st.sel=d.id;st.tab=tab||'config';drawer();render();s21Reveal(d)}
+function s21Reveal(d){try{if(!matchMedia('(max-width:760px)').matches)return;const r=$('#cv').getBoundingClientRect(),rd=$('#rdock').getBoundingClientRect(),top=rd.height?rd.top:innerHeight*.45,sy=r.top+st.vy+d.y*st.z;if(sy>top-50||sy<r.top+40){st.vy+=(r.top+(top-r.top)/2)-sy;render()}}catch(e){console.warn('reveal',e.message)}}
 function drawer(){const d=W.get(st.win),dr=$('#drawer');if(!d){dr.hidden=true;return}dr.hidden=false;const tabs=[['details','Details'],['config','Config']];if((d.cli&&!st.strict)||d.role==='host')tabs.push(['cli',d.role==='host'?'Command prompt':'CLI']);if(d.role==='host'&&!['printer','camera'].includes(d.type))tabs.push(['browser','Web browser']);if((SPEC[d.type].base||d.type)==='server')tabs.push(['svc','Services']);if((W.cons||[]).some(c=>c.a===d.id))tabs.push(['term','Terminal']);if(!tabs.find(t=>t[0]===st.tab))st.tab='details';
  dr.innerHTML=`<div class="dh"><h3>${esc(d.name)} <small>${esc(SPEC[d.type].l)}</small></h3><label style="font-size:.8rem"><input type="checkbox" id="pw" ${d.on?'checked':''}> Power</label><button class="btn sm" id="dx">Close</button></div><div class="tabs">${tabs.map(t=>`<button data-tb="${t[0]}" class="${st.tab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class="dbody" id="dbody" style="${st.tab==='cli'||st.tab==='term'?'padding:.4rem':''}"></div>`;
  $('#dx').onclick=closeWin;$('#pw').onchange=e=>{d.on=e.target.checked;W.reset();log(d.name+(d.on?' powered on':' powered off'));changed()};$$('[data-tb]').forEach(b=>b.onclick=()=>{st.tab=b.dataset.tb;drawer()});
@@ -2849,7 +2884,7 @@ hist=[];hi=-1;snap();renderBottom();loadHash();addEventListener('resize',render)
   const box=$('#hmStats');if(box)box.innerHTML=[t.labs,t.pdus,t.devs,t.types].map((n,i)=>`<span class="hchip"><b>${n}</b> ${L[i]}</span>`).join('')}
  function show(){fill();heroFill();$('#toast').hidden=true;$('#hmShow').checked=pref;H.hidden=false;document.body.style.overflow='hidden';setTimeout(()=>{const f=$('#hmNew');f&&f.focus()},50)}
  function hide(){H.hidden=true;document.body.style.overflow=''}
- window.S21Home={show,hide};
+ window.S21Home={show,hide,refresh:heroFill};
  $('#bHome').onclick=show;$('#hmSkip').onclick=hide;
  $('#hmShow').onchange=e=>{pref=e.target.checked;try{localStorage.setItem('s21home',pref?'1':'0')}catch(x){}};
  $('#hmNew').onclick=()=>{if(!W.devs.length||confirm('Start a new empty topology? Unsaved work will be lost.')){hide();$('#bNew').click()}};
@@ -6253,12 +6288,69 @@ var fa = window.S21fa = function (n, c) { return '<i class="fa-solid fa-' + n + 
   function vis(e){return !!(e&&!e.hidden&&e.getClientRects().length)}
   function pg(){var d=document.documentElement,np=document.getElementById('newPage'),bar=np&&np.querySelector('.np-prev');
     d.setAttribute('data-s21pg',vis(np)?'new':vis(document.getElementById('home'))?'home':'');
+    d.setAttribute('data-s21sheet',vis(document.getElementById('drawer'))?'1':'');
     if(bar&&vis(np))d.style.setProperty('--s21-np-h',bar.offsetHeight+'px')}
   try{document.documentElement.setAttribute('data-s21fab',localStorage.getItem('s21.fabSide')==='left'?'left':'right')}catch(e){}
+  var rdk=document.getElementById('rdock');if(rdk)rdk.addEventListener('click',function(e){if(e.target===rdk&&e.offsetY<26)rdk.classList.toggle('s21-full')});
   pg();new MutationObserver(pg).observe(document.body,{attributes:true,attributeFilter:['hidden','style','class'],subtree:true,childList:true});
   setPal();addEventListener('resize',setPal);addEventListener('resize',pg);addEventListener('orientationchange',setPal);if(window.ResizeObserver){var ro=new ResizeObserver(setPal);pal&&ro.observe(pal);bot&&ro.observe(bot)}
   if(!(window.matchMedia&&matchMedia('(max-width:760px)').matches))return;
   var b=document.getElementById('bottom'),t=document.getElementById('bMin');if(b&&t&&!b.classList.contains('min')){b.classList.add('min');t.textContent='▴'}
+}catch(e){}})();
+</script>
+<script>/* toolbar "more" arrow (phones) */
+(function(){try{
+  var tb=document.getElementById('toolbar'); if(!tb)return;
+  var btn=document.createElement('button');btn.id='s21RibMore';btn.type='button';
+  btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+  function sw(){try{return localStorage.getItem('s21-lang')==='sw'}catch(e){return false}}
+  function label(){var o=tb.classList.contains('s21-open'),t=o?(sw()?'Onyesha zana chache':'Show fewer tools'):(sw()?'Onyesha zana zaidi':'Show more tools');btn.title=t;btn.setAttribute('aria-label',t);btn.setAttribute('aria-expanded',o?'true':'false')}
+  function phone(){return window.matchMedia&&matchMedia('(max-width:760px)').matches}
+  var busy=0;
+  function update(){ if(busy)return; busy=1; requestAnimationFrame(function(){ busy=0;
+    if(btn.parentNode!==tb)tb.appendChild(btn);
+    if(!phone()){tb.classList.remove('s21-open','s21-over');return}
+    if(tb.classList.contains('s21-open')){tb.classList.add('s21-over');label();return}
+    tb.classList.remove('s21-over');                       /* measure without the arrow */
+    if(tb.scrollWidth>tb.clientWidth+4)tb.classList.add('s21-over');
+    label(); }) }
+  btn.addEventListener('click',function(e){e.stopPropagation();var o=tb.classList.toggle('s21-open');if(!o)tb.scrollLeft=0;label();update()});
+  tb.addEventListener('click',function(e){ if(!tb.classList.contains('s21-open')||e.target.closest('#s21RibMore'))return;
+    var b=e.target.closest('.btn'); if(b&&!e.target.closest('select,input'))setTimeout(function(){tb.classList.remove('s21-open');tb.scrollLeft=0;update()},150)});   /* pick a tool: the bar folds back */
+  addEventListener('resize',update);addEventListener('orientationchange',update);
+  if(window.ResizeObserver)new ResizeObserver(update).observe(tb);
+  new MutationObserver(update).observe(tb,{childList:true});
+  update();setTimeout(update,800);setTimeout(update,2500);
+}catch(e){}})();
+</script>
+<script>/* first run: after the splash, choose English or Kiswahili */
+(function(){try{
+  if(/bot|crawl|spider|slurp|lighthouse|pagespeed|headless|prerender/i.test(navigator.userAgent))return;
+  if(localStorage.getItem('s21-lang')||localStorage.getItem('s21.langAsked'))return;
+  var shown=false;
+  function curLang(){try{return localStorage.getItem('s21-lang')==='sw'?'sw':'en'}catch(e){return 'en'}}
+  function choose(l){
+    try{localStorage.setItem('s21.langAsked','1')}catch(e){}
+    var tg=document.getElementById('topLang');
+    if(l!==curLang()&&tg)tg.click();
+    try{localStorage.setItem('s21-lang',l)}catch(e){}
+    try{window.S21Plus&&S21Plus.trApply&&S21Plus.trApply()}catch(e){}
+    document.documentElement.lang=l;
+    var o=document.getElementById('s21LangAsk');if(o&&o.parentNode)o.parentNode.removeChild(o);
+    setTimeout(function(){try{window.S21Home&&S21Home.refresh&&S21Home.refresh()}catch(e){}},80);
+  }
+  function show(){ if(shown)return; shown=true;
+    var logo=document.querySelector('#hdr img'),src=logo?logo.src:'icon-192.png';
+    var o=document.createElement('div');o.id='s21LangAsk';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-labelledby','s21LangT');
+    o.innerHTML='<div class="box"><img alt="" src="'+src+'"><h2 id="s21LangT">Choose your language</h2><p>Chagua lugha yako</p><button type="button" class="en" data-l="en"><b>English</b><span>Continue in English</span></button><button type="button" class="sw" data-l="sw"><b>Kiswahili</b><span>Endelea kwa Kiswahili</span></button></div>';
+    o.addEventListener('click',function(e){var b=e.target.closest('button[data-l]');if(b)choose(b.getAttribute('data-l'))});
+    o.addEventListener('keydown',function(e){if(e.key==='Escape')choose('en')});
+    document.body.appendChild(o);var f=o.querySelector('button');if(f)f.focus();
+  }
+  function when(){ var sp=document.getElementById('s21Splash');
+    if(sp&&getComputedStyle(sp).display!=='none'){document.addEventListener('s21:splash-done',function(){setTimeout(show,450)},{once:true});setTimeout(show,9000)}
+    else setTimeout(show,700) }
+  if(document.readyState==='complete')when();else addEventListener('load',when);
 }catch(e){}})();
 </script>
 </body></html>

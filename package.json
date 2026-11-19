@@ -1,6 +1,6 @@
 {
   "name": "smart21network",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "Smart21network network simulator",
   "main": "main.js",
   "scripts": {
